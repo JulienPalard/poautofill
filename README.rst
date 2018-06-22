@@ -20,6 +20,9 @@ translating offline, like missing vocabulary.
 Usage::
 
   poautofill any_file.po
+  # processes any_file.po
 
+  poautofill -h
+  # displays help
 
 * Free software: MIT license

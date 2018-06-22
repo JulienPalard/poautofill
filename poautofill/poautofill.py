@@ -3,9 +3,11 @@
 """Fill given .po files with deepl.com results.
 """
 
-import argparse
 import time
+import sys
+import os
 
+import click
 import requests
 import polib
 
@@ -37,41 +39,33 @@ def deepl(english_sentence, target_lang='FR'):
         return ''
 
 
-def fill_po(po_file):
-    """Fill given po files with deepl translations.
+def fill_po(po_file, verbose, target_lang):
+    """Fill given po file with deepl translations.
     """
     entries = polib.pofile(po_file)
-    for entry in entries:
-        if entry.msgstr:
-            continue
-        entry.msgstr = deepl(entry.msgid)
-        entry.flags.append('fuzzy')
-        time.sleep(1)  # Hey deepl.com, hope it's nice enough, love your work!
+    output = sys.stdout if verbose else open(os.devnull, 'w')
+    with click.progressbar(entries,
+                           label=po_file,
+                           file=output) as pbar:
+        for entry in pbar:
+            if entry.msgstr:
+                continue
+            entry.msgstr = deepl(entry.msgid, target_lang)
+            entry.flags.append('fuzzy')
+            time.sleep(1)  # Hey deepl.com, hope it's nice enough, love your work!
     entries.save()
 
 
-def fill_pos(po_files):
+@click.command()
+@click.argument('po-files', type=click.Path(), nargs=-1)
+@click.option('--verbose', '-v', is_flag=True, default=False, help="display progress bar")
+@click.option('--target-lang', '-t', default='FR', help='target language')
+def fill_pos(po_files, verbose, target_lang):
     """Fill given po files with deepl translations.
     """
     for po_file in po_files:
-        fill_po(po_file)
-
-
-def parse_args():
-    """Parses command line arguments.
-    """
-    parser = argparse.ArgumentParser(
-        description="Fill a .po file with deepl translations")
-    parser.add_argument("po_files", nargs="+")
-    return parser.parse_args()
-
-
-def main():
-    """Module entry point.
-    """
-    args = parse_args()
-    fill_pos(args.po_files)
+        fill_po(po_file, verbose, target_lang)
 
 
 if __name__ == '__main__':
-    main()
+    fill_pos()
