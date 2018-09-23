@@ -26,3 +26,12 @@ Usage::
   # displays help
 
 * Free software: MIT license
+
+
+Contributing
+============
+
+Don't forgot to test locally::
+
+  $ pip install -e .[dev]
+  $ detox
