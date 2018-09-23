@@ -19,6 +19,7 @@ setup(
     entry_points={"console_scripts": ["poautofill=poautofill.poautofill:fill_pos"]},
     include_package_data=True,
     install_requires=["polib", "requests", "click"],
+    extras_require={"dev": ["black", "detox"]},
     license="MIT license",
     zip_safe=False,
     keywords="poautofill",

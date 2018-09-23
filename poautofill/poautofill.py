@@ -72,4 +72,4 @@ def fill_pos(po_files, verbose, target_lang):
 
 
 if __name__ == "__main__":
-    fill_pos()
+    fill_pos()  # pylint: disable=no-value-for-parameter
