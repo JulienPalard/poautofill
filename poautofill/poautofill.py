@@ -19,7 +19,7 @@ def deepl(english_sentence, target_lang="FR"):
     May return an empty string on failure.
     """
     response = requests.post(
-        "https://www.deepl.com/jsonrpc",
+        "https://www2.deepl.com/jsonrpc",
         json={
             "jsonrpc": "2.0",
             "method": "LMT_handle_jobs",
