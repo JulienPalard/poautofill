@@ -31,7 +31,7 @@ Usage::
 Contributing
 ============
 
-Don't forgot to test locally::
+Don't forget to test locally::
 
   $ pip install -e .[dev]
   $ detox
