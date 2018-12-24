@@ -8,7 +8,7 @@ with open("README.rst") as readme_file:
 
 setup(
     name="poautofill",
-    version="0.1.2",
+    version="0.1.3",
     description="Autofill po files with automated translations.",
     long_description=readme,
     author="Julien Palard",
