@@ -48,14 +48,18 @@ def fill_po(po_file, verbose, target_lang):
     """
     entries = polib.pofile(po_file)
     output = sys.stdout if verbose else open(os.devnull, "w")
-    with click.progressbar(entries, label=po_file, file=output) as pbar:
-        for entry in pbar:
-            if entry.msgstr:
-                continue
-            entry.msgstr = deepl(entry.msgid, target_lang)
-            entry.flags.append("fuzzy")
-            time.sleep(1)  # Hey deepl.com, hope it's nice enough, love your work!
-    entries.save()
+    try:
+        with click.progressbar(entries, label=po_file, file=output) as pbar:
+            for entry in pbar:
+                if entry.msgstr:
+                    continue
+                entry.msgstr = deepl(entry.msgid, target_lang)
+                entry.flags.append("fuzzy")
+                time.sleep(1)  # Hey deepl.com, hope it's nice enough, love your work!
+        entries.save()
+    except KeyboardInterrupt:
+        entries.save()
+        raise
 
 
 @click.command()
