@@ -12,6 +12,12 @@ import requests
 import polib
 
 
+class DeeplError(RuntimeError):
+    def __init__(self, message):
+        self.message = message
+        super().__init__()
+
+
 def deepl(english_sentence, target_lang="FR"):
     """Query deepl via their jsonrpc to translate the given
     english_sentence to the given target language.
@@ -35,6 +41,8 @@ def deepl(english_sentence, target_lang="FR"):
             "id": 36,
         },
     ).json()
+    if response.get("error"):
+        raise DeeplError(response["error"]["message"])
     try:
         return response["result"]["translations"][0]["beams"][0][
             "postprocessed_sentence"
@@ -56,10 +64,10 @@ def fill_po(po_file, verbose, target_lang):
                 entry.msgstr = deepl(entry.msgid, target_lang)
                 entry.flags.append("fuzzy")
                 time.sleep(1)  # Hey deepl.com, hope it's nice enough, love your work!
+    except DeeplError as err:
+        print("Deepl Error:", err.message, file=sys.stderr)
+    finally:
         entries.save()
-    except KeyboardInterrupt:
-        entries.save()
-        raise
 
 
 @click.command()
